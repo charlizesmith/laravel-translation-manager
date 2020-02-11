@@ -288,32 +288,14 @@ class Manager
                         foreach ($subfolders as $subfolder) {
                             $subfolder_level = $subfolder_level.$subfolder.DIRECTORY_SEPARATOR;
 
-                            $temp_path = rtrim( $path . DIRECTORY_SEPARATOR . $subfolder_level, DIRECTORY_SEPARATOR );
-                            $temp_path1 = rtrim( $path . DIRECTORY_SEPARATOR . $subfolder_level, DIRECTORY_SEPARATOR );
-                            if ( !is_dir( $temp_path ) ) {
-                                mkdir( $temp_path, 0777, true );
-
-                            }
-                            if ( !is_dir( $temp_path1 ) ) {
-                                mkdir( $temp_path1, 0777, true );
+                            $temp_path = rtrim($path.DIRECTORY_SEPARATOR.$subfolder_level, DIRECTORY_SEPARATOR);
+			    if (! is_dir($temp_path)) {
+				mkdir($temp_path, 0777, true);
                             }
                         }
-                        $config = \Config::get('configFile.config_var');
-                        $server1_path = $config['server1_path_lang'];
-                        $server2_path =$config['server2_path_lang'];
-			$artisan1_path = $config['artisan1_path'];
-                        $artisan2_path =$config['artisan2_path'];
-
-
-                        $path_nw = $server1_path . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $group . '.php';
-                        $path1_nw = $server2_path . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $group . '.php';
-
-                        $output = "<?php\n\nreturn " . var_export( $translations, true ) . ";" . \PHP_EOL;
-                        $this->files->put( $path_nw, $output );
-			            $this->files->put( $path1_nw, $output );
-			      sleep(5);
-                        exec('php '.$artisan1_path.' vue-i18n:generate');
-                        exec('php '.$artisan2_path.' vue-i18n:generate');
+                        $path = $path.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$group.'.php';
+			$output = "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL;
+			$this->files->put($path, $output);
 
                     }
                 }
