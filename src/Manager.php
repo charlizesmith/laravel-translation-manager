@@ -57,7 +57,9 @@ class Manager
         //allows for vendor lang files to be properly recorded through recursion.
         $vendor = true;
         if ($base == null) {
-            $base = $this->app['path.lang'];
+            //$base = $this->app['path.lang'];
+	    $config = \Config::get('configFile.config_var');
+            $base = $config['server2_path_lang'];
             $vendor = false;
         }
 
@@ -293,9 +295,25 @@ class Manager
 				mkdir($temp_path, 0777, true);
                             }
                         }
-                        $path = $path.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$group.'.php';
-			$output = "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL;
-			$this->files->put($path, $output);
+			    
+			$config = \Config::get('configFile.config_var');
+			$server1_path = $config['server1_path_lang'];
+			$server2_path =$config['server2_path_lang'];
+			$artisan1_path = $config['artisan1_path'];
+			$artisan2_path =$config['artisan2_path'];
+
+			$path_nw = $server1_path . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $group . '.php';
+			$path1_nw = $server2_path . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $group . '.php';
+
+			$output = "<?php\n\nreturn " . var_export( $translations, true ) . ";" . \PHP_EOL;
+			$this->files->put( $path_nw, $output );
+			$this->files->put( $path1_nw, $output );
+			sleep(5);
+			exec('php '.$artisan1_path.' vue-i18n:generate');
+			exec('php '.$artisan2_path.' vue-i18n:generate');
+                        //$path = $path.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$group.'.php';
+			//$output = "<?php\n\nreturn ".var_export($translations, true).';'.\PHP_EOL;
+			//$this->files->put($path, $output);
 
                     }
                 }
