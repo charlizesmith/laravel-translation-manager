@@ -227,6 +227,11 @@ class Controller extends BaseController
         $array['database']['translations_table'] = $_POST['tb_translation'];
         $data = var_export($array, 1);
         if(\File::put(config_path() . '/translation-manager.php', "<?php\n return $data ;")) {
+            $config = \Config::get('configFile.config_var');
+			$artisan1_path = $config['artisan1_path'];
+			$artisan2_path =$config['artisan2_path'];
+            exec('php '.$artisan1_path.' config:cache');
+            exec('php '.$artisan2_path.' config:cache');
             $prefix = $this->manager->getConfig('route')['prefix'];
             return redirect("/$prefix");
         } 
